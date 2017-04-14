@@ -50,3 +50,17 @@ names(fitAll)=paste(c(rep("est_",5),rep("stderr_",5) ,rep("zval_",5),rep("pval_"
 
 # save the dataframe that includes all coefficients from all iterations for the inputed number of simulated subjects
 save(fitAll,file=paste("fitAll_numsub_",numsub,".RData",sep=""))
+
+#Load in all the sims
+fit=c(); 
+for (s in 10:40){
+  load(paste("fitAll_numsub_",s,".RData",sep=""))
+  fitAll$subjid=s
+  fit=rbind(fit,fitAll)
+}
+
+#Plot power for the two main effects
+par(mar=c(3,3,1,0.5), mgp=c(1.6,0.4,0),oma=c(0,0,0,0))
+plot(10:40,tapply(fit$pval_pt2<0.05,fit$subjid,mean),type = "b",frame.plot = F,lwd=2,col="firebrick2",xlab="N",ylab="Power",tck=-0.01)
+lines(10:40,tapply(fit$pval_pt3<0.05,fit$subjid,mean),type = "b",col="dodgerblue",lwd=2)
+lines(c(10,40),c(.8,.8),lwd=3,lty=2)
